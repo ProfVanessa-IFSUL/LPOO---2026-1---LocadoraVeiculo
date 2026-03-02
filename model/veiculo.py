@@ -53,6 +53,17 @@ class Carro(Veiculo):
         self.valor_seguro = 50
     
 class Motorhome(Veiculo):
-    def __init__(self, placa:str, taxa_diaria:float, categoria:Categoria=Categoria.ECONOMICO):
+    def __init__(self, placa:str, taxa_diaria:float=0.0, categoria:Categoria=Categoria.ECONOMICO):
         super().__init__(placa, taxa_diaria, categoria=categoria)
         self.valor_seguro = 120
+
+class VeiculoFactory:
+    @staticmethod
+    def criar_veiculo(tipo: str, placa: str, categoria: Categoria, taxa_diaria: float = 0.0):
+        tipo_normalizado = tipo.strip().lower()
+        if tipo_normalizado == "carro":
+            return Carro(placa, taxa_diaria, categoria)
+        elif tipo_normalizado == "motorhome":
+            return Motorhome(placa, taxa_diaria, categoria)
+        else:
+            raise ValueError(f"Tipo de veículo inválido: {tipo}. Use 'carro' ou 'motorhome'.")
