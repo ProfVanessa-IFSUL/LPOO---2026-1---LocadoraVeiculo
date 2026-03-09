@@ -1,14 +1,19 @@
 from datetime import date, datetime
 from .veiculo import Veiculo
 from .ExcecoesPersonalizadas import DataInvalidaError
+from .LocacaoStrategy import *
 
 
 class Locacao:
 
-    def __init__(self, veiculo: Veiculo, data_inicio: date=datetime.now().date(), data_fim: date=None):
+    def __init__(self, veiculo: Veiculo, data_inicio: date=datetime.now().date(), data_fim: date=None, estrategia:CalculoLocacaoStrategy = CalculoPadraoStrategy()):
+        self.__data_inicio = None
+        self.__data_fim = None
+        
         self.veiculo = veiculo
         self.data_inicio = data_inicio
         self.data_fim = data_fim
+        self.estrategia = estrategia
     
     @property
     def veiculo(self):
@@ -35,13 +40,15 @@ class Locacao:
     
     @property
     def data_fim(self):
-        return self.__data_fim
+        if self.__data_fim is not None:
+            return self.__data_fim
+        else:
+            return None
     
     @data_fim.setter
     def data_fim(self, data_fim: date):
         if data_fim is not None and self.data_inicio > data_fim:
             raise DataInvalidaError("Data de início não pode ser posterior à data de fim.")
-        
         self.__data_fim = data_fim
         
     def calcular_valor_locacao(self) -> float:
@@ -52,6 +59,6 @@ class Locacao:
         if dias <= 0:
             dias = 1
                
-        valor_total = (dias * self.veiculo.taxa_diaria) + self.veiculo.valor_seguro
+        valor_total = self.estrategia.calcular_diarias(self.veiculo, dias)
         return float(valor_total)
 

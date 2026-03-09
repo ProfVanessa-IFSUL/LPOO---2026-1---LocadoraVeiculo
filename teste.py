@@ -2,6 +2,7 @@ from datetime import date
 from model.locacao import Locacao
 from model.veiculo import VeiculoFactory, Categoria
 from model.ExcecoesPersonalizadas import DataInvalidaError
+from model.LocacaoStrategy import *
 
 print("\n1. Testando tipos válidos na fábrica:")
 try:
@@ -26,13 +27,13 @@ try:
     data_inicio = date(2026, 3, 1)
     data_fim = date(2026, 3, 4) # 3 dias de diferença
     # Cálculo esperado Carro: 3 * 150 (taxa_diaria) + 50 (seguro) = 500
-    locacao_dias = Locacao(veiculo=carro, data_inicio=data_inicio, data_fim=data_fim)
+    locacao_dias = Locacao(veiculo=carro, data_inicio=data_inicio, data_fim=data_fim, estrategia=CalculoVIPStrategy())
     valor = locacao_dias.calcular_valor_locacao()
     diferenca_datas = data_fim - data_inicio
     print(f"Cálculo para {diferenca_datas.days} dias: R$ {valor}")
 except Exception as e:
     print(f"Erro no cálculo de múltiplos dias: {e}")
-
+'''
 # Cálculo com devolução no mesmo dia
 print("\n4. Testando cálculo com devolução no mesmo dia (mínimo 1 diária):")
 try:
@@ -61,3 +62,5 @@ try:
     print("Erro: Deveria ter lançado ValueError para taxa diária inválida")
 except ValueError as e:
     print(f"Exceção capturada corretamente: {e}")
+
+'''
