@@ -21,5 +21,5 @@ Hoje, dia **09 de março**, foi trabalhado o conteúdo da aula 3. Durante a aula
 
 **Tarefa para a próxima aula (16 de março):**
 Os alunos devem realizar os tutoriais a seguir e enviá-los através do Google Classroom antes do nosso próximo encontro no dia 16:
-*   [Tutorial 3.2 - State](<tutoriais/Aula 3.2 - State - Locadora de Veículos.md>)
-*   [Tutorial 3.3 - Decorator](<tutoriais/Aula 3.3 - Decorator - Locadora de Veículos.md>)
+*   [Aula 3.2 - State](<tutoriais/aula-3-2-tutorial-state--locadora-de-veículos.md>)
+*   [Aula 3.3 - Decorator](<tutoriais/aula-3-3-tutorial-decorator--locadora-de-veículos.md>)
