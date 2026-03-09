@@ -8,10 +8,10 @@ O objetivo deste projeto é servir como base prática para a aplicação de conc
 
 Os guias práticos para a implementação dos padrões de projeto no sistema da locadora estão disponíveis na pasta `tutoriais/`:
 
-*   [Aula 2 - Factory Method](<tutoriais/Aula 2 - Tutorial padrão de projeto Factory - Locadora de Veículos.md>)
-*   [Aula 3.1 - Strategy](<tutoriais/Aula 3.1 - Tutorial - Strategy - locadora de veículos.md>)
-*   [Aula 3.2 - State](<tutoriais/Aula 3.2 - State - Locadora de Veículos.md>)
-*   [Aula 3.3 - Decorator](<tutoriais/Aula 3.3 - Decorator - Locadora de Veículos.md>)
+*   [Aula 2 - Factory Method](<tutoriais/aula-2-tutorial--factory--locadora-veiculos.md>)
+*   [Aula 3.1 - Strategy](<tutoriais/aula-3-1-tutorial-strategy--locadora-veiculos.md>)
+*   [Aula 3.2 - State](<tutoriais/aula-3-2-tutorial-state--locadora-de-veículos.md>)
+*   [Aula 3.3 - Decorator](<tutoriais/aula-3-3-tutorial-decorator--locadora-de-veículos.md>)
 
 ---
 
