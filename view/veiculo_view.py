@@ -1,0 +1,76 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import tkinter as tk
+from tkinter import messagebox, ttk
+from model.veiculo import VeiculoFactory, Categoria
+import view.veiculo_list_view as list_view
+
+class JanelaCadastroVeiculo(tk.Toplevel):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.title("Cadastro de Novo Veículo")
+        self.geometry("400x350")
+        
+        
+        # Label de título
+        lbl_titulo = tk.Label(self, text="Cadastrar Veículo", font=("Helvetica", 16, "bold"))
+        lbl_titulo.pack(pady=10)
+
+        # Placa
+        frame_placa = tk.Frame(self)
+        frame_placa.pack(pady=5, fill="x", padx=20)
+        tk.Label(frame_placa, text="Placa:").pack(side="left")
+        self.txt_placa = tk.Entry(frame_placa)
+        self.txt_placa.pack(side="right")
+
+        # Tipo
+        frame_tipo = tk.Frame(self)
+        frame_tipo.pack(pady=5, fill="x", padx=20)
+        tk.Label(frame_tipo, text="Tipo (carro/motorhome):").pack(side="left")
+        self.txt_tipo = tk.Entry(frame_tipo)
+        self.txt_tipo.pack(side="right", expand=True, fill="x")
+
+        # Categoria (ComboBox)
+        frame_cat = tk.Frame(self)
+        frame_cat.pack(pady=5, fill="x", padx=20)
+        tk.Label(frame_cat, text="Categoria:").pack(side="left")
+        self.cb_categoria = ttk.Combobox(frame_cat, values=["ECONOMICO", "EXECUTIVO", "LUXO"])
+        self.cb_categoria.current(0)
+        self.cb_categoria.pack(side="right", expand=True, fill="x")
+
+        # Taxa Diária
+        frame_taxa = tk.Frame(self)
+        frame_taxa.pack(pady=5, fill="x", padx=20)
+        tk.Label(frame_taxa, text="Taxa Diária (R$):").pack(side="left")
+        self.txt_taxa = tk.Entry(frame_taxa)
+        self.txt_taxa.pack(side="right", expand=True, fill="x")
+
+        # Botão Cadastrar
+        # Removido bg/fg para compatibilidade com botões nativos do macOS
+        btn_cadastrar = tk.Button(self, text="Salvar Veículo", command=self.solicitar_cadastro)
+        btn_cadastrar.pack(pady=20)
+
+    def solicitar_cadastro(self):
+        placa = self.txt_placa.get().strip().upper()
+        tipo = self.txt_tipo.get().strip()
+        categoria = self.cb_categoria.get().strip()
+        taxa_str = self.txt_taxa.get().strip()
+
+        try:
+            taxa_float = float(taxa_str.replace(',', '.'))
+        except ValueError:
+            messagebox.showerror("Erro", "Formato de taxa inválido.", parent=self)
+            return
+
+        try:
+            cat_enum = Categoria[categoria.upper()]
+            novo_veiculo = VeiculoFactory.criar_veiculo(tipo.lower(), placa, cat_enum, taxa_float)
+            list_view.lista_veiculos.append(novo_veiculo)
+            messagebox.showinfo("Sucesso", "Veículo cadastrado com sucesso!", parent=self)
+            self.destroy() # Fecha a janela de cadastro e volta pro menu local
+        except KeyError:
+            messagebox.showerror("Erro", "Categoria inválida.", parent=self)
+        except Exception as e:
+            messagebox.showerror("Aviso", str(e), parent=self)

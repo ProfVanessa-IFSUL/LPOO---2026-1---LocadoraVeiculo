@@ -35,6 +35,9 @@ class Veiculo(ABC):
         
     def reter_na_frota_pra_conserto(self):
         self.estado_atual.enviar_manutencao()
+        
+    def exibir_dados(self):
+        return f"Placa: {self.placa}\nCategoria: {self.categoria.name}\nTaxa Diária: R$ {self.taxa_diaria:.2f}\nEstado: {self.estado_atual.__class__.__name__}"
 
     @property
     def placa(self):
