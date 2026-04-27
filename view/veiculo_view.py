@@ -6,12 +6,14 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from model.veiculo import VeiculoFactory, Categoria
 import view.veiculo_list_view as list_view
+from control.veiculo_controller import VeiculoController
 
 class JanelaCadastroVeiculo(tk.Toplevel):
     def __init__(self, master=None):
         super().__init__(master)
         self.title("Cadastro de Novo Veículo")
         self.geometry("400x350")
+        self.controller = VeiculoController()
         
         
         # Label de título
@@ -58,19 +60,12 @@ class JanelaCadastroVeiculo(tk.Toplevel):
         categoria = self.cb_categoria.get().strip()
         taxa_str = self.txt_taxa.get().strip()
 
-        try:
-            taxa_float = float(taxa_str.replace(',', '.'))
-        except ValueError:
-            messagebox.showerror("Erro", "Formato de taxa inválido.", parent=self)
-            return
-
-        try:
-            cat_enum = Categoria[categoria.upper()]
-            novo_veiculo = VeiculoFactory.criar_veiculo(tipo.lower(), placa, cat_enum, taxa_float)
-            list_view.lista_veiculos.append(novo_veiculo)
-            messagebox.showinfo("Sucesso", "Veículo cadastrado com sucesso!", parent=self)
-            self.destroy() # Fecha a janela de cadastro e volta pro menu local
-        except KeyError:
-            messagebox.showerror("Erro", "Categoria inválida.", parent=self)
-        except Exception as e:
-            messagebox.showerror("Aviso", str(e), parent=self)
+        sucesso, msg = self.controller.salvar_veiculo(placa, tipo, categoria, taxa_str)
+        
+        if sucesso:
+            messagebox.showinfo("Sucesso", msg, parent=self)
+        else:
+            messagebox.showerror("Erro", msg, parent=self)    
+            
+        self.destroy() # Fecha a janela de cadastro e volta pro menu local
+        

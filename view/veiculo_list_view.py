@@ -6,7 +6,16 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 # persistencia local
-lista_veiculos = []
+# lista_veiculos = []
+
+#from dao.veiculo_dao import VeiculoDAO
+#veiculo_dao = VeiculoDAO()
+#lista_veiculos = veiculo_dao.listar_todos()
+
+
+from control.veiculo_controller import VeiculoController
+
+
 
 ## Toda aplicação Tkinter só deve possuir uma única janela principal raiz (tk.Tk()). 
 # Se tentar dar tk.Tk() em outra tela, vai abrir outra instância na memória 
@@ -21,7 +30,9 @@ class JanelaListagemVeiculos(tk.Toplevel):
     def __init__(self, master=None):
         super().__init__(master)
         self.title("Veículos Cadastrados")
-        self.geometry("600x400")
+        self.geometry("800x400")
+        
+        self.controller = VeiculoController()
         
         self.criar_widgets()
         self.carregar_dados()
@@ -57,8 +68,11 @@ class JanelaListagemVeiculos(tk.Toplevel):
         btn_novo = tk.Button(frame_botoes, text="Novo", width=10, command=self.abrir_novo)
         btn_novo.pack(side="left", padx=5)
 
-        btn_editar = tk.Button(frame_botoes, text="Ver Informações", width=15, command=self.mostrar_info)
+        btn_editar = tk.Button(frame_botoes, text="Editar", width=15)
         btn_editar.pack(side="left", padx=5)
+        
+        btn_info = tk.Button(frame_botoes, text="Ver Informações", width=15, command=self.mostrar_info)
+        btn_info.pack(side="left", padx=5)
 
         btn_remover = tk.Button(frame_botoes, text="Remover", width=10, command=self.remover_veiculo)
         btn_remover.pack(side="left", padx=5)
@@ -93,11 +107,15 @@ class JanelaListagemVeiculos(tk.Toplevel):
         placa = item['values'][0]
             
         # 4. Trazemos a "lista_veiculos" global, onde todos os objetos de modelo estão salvos.
-        global lista_veiculos
+        #global lista_veiculos
+        #lista_veiculos = veiculo_dao.listar_todos()
+        
         
         # 5. Procura na lista o objeto exato do Veículo que tenha a mesma placa da linha clicada
         # O comando "next(...)" retorna o primeiro veículo encontrado que possui essa placa.
-        veiculo = next((v for v in lista_veiculos if v.placa == placa), None)
+        #veiculo = next((v for v in lista_veiculos if v.placa == placa), None)
+        
+        veiculo = self.controller.buscar_por_placa(placa)
             
         # 6. Se o veículo foi encontrado na lista de persistência...
         if veiculo:
@@ -107,7 +125,7 @@ class JanelaListagemVeiculos(tk.Toplevel):
             except AttributeError:
                 # Caso a classe do modelo não tenha o método exibir_dados() por alguma razão,
                 # cria uma string básica com as informações para evitar que o código quebre
-                info = f"Placa: {veiculo.placa}\nCategoria: {veiculo.categoria.name}\nTaxa: R$ {veiculo.taxa_diaria:.2f}"
+                info = f"Placa: {veiculo.placa}\nCategoria: {veiculo.categoria}\nTaxa: R$ {veiculo.taxa_diaria:.2f}"
             
             # 7. Dispara a Caixa de Diálogo do Windows/Mac (Popup) apresentando no centro da tela as informações obtidas
             messagebox.showinfo("Informações do Veículo", info, parent=self)
@@ -155,7 +173,7 @@ class JanelaListagemVeiculos(tk.Toplevel):
             
         # 2. Resgata a variável global 'lista_veiculos' que age como nossa persistência em memória
         global lista_veiculos
-        veiculos = lista_veiculos
+        veiculos = self.controller.listar_veiculos()
         
         # 3. Tratamento de segurança: se a lista por acaso for None (nula), avisa o erro
         if veiculos is None:
@@ -176,6 +194,6 @@ class JanelaListagemVeiculos(tk.Toplevel):
             self.tree.insert("", "end", values=(
                 v.placa, 
                 tipo_nome, 
-                v.categoria.name, 
+                v.categoria, 
                 taxa_formatada
             ))

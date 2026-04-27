@@ -16,7 +16,7 @@ def popular_dados_iniciais():
     list_view.lista_veiculos.extend([v1, v2])
 
 if __name__ == "__main__":
-    popular_dados_iniciais()
+    #popular_dados_iniciais()
     
     root = tk.Tk()
     root.withdraw() # Esconde a janela principal do Tkinter raiz vazia

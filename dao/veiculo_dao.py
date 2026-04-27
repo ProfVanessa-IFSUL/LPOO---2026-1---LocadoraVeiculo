@@ -69,3 +69,27 @@ class VeiculoDAO(GenericDAO):
     
     def atualizar(self, objeto):
         pass
+    
+    def buscar_por_placa(self, placa: str):
+        if not self.conexao:
+            return []
+        
+        try:
+            cursor = self.conexao.cursor()
+            query = """select vei_tipo, vei_placa, vei_categoria, vei_taxa_diaria
+                    FROM tb_veiculos
+                    WHERE vei_placa = %s"""
+            cursor.execute(query, (placa,))
+            linha = cursor.fetchone()
+            
+            if linha: 
+                return VeiculoFactory.criar_veiculo(linha[0], linha[1], linha[2], linha[3])
+            
+            return None
+            
+        except Exception as e:
+            print(f"Erro ao buscar veículo: {placa}. Erro: {e}")
+        
+        finally:
+            if cursor:
+                cursor.close()
