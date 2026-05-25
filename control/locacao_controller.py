@@ -232,3 +232,12 @@ class LocacaoController:
         except Exception as e:
             print(f"Erro ao buscar veículos disponíveis: {e}")
             return []
+
+# ---------- Filtrar por Placa ----------
+    def listar_locacoes_por_placa(self, placa: str):
+            """Retorna locações filtradas por placa do veículo (busca parcial, case-insensitive)."""
+            try:
+                return self.locacao_dao.listar_por_placa(placa)
+            except Exception as e:
+                print(f"Erro ao filtrar locações por placa: {e}")
+                return []

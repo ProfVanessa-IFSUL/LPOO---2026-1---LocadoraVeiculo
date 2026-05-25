@@ -40,7 +40,9 @@ class JanelaListagemVeiculos(tk.Toplevel):
     def criar_widgets(self):
         lbl_titulo = tk.Label(self, text="Veículos Cadastrados", font=("Helvetica", 16, "bold"))
         lbl_titulo.pack(pady=10)
-
+        
+        
+        
         # Frame para a Treeview e Scrollbar
         frame_tree = tk.Frame(self)
         frame_tree.pack(expand=True, fill="both", padx=20, pady=10)

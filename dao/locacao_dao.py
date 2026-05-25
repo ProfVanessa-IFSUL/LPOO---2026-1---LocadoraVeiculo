@@ -179,3 +179,27 @@ class LocacaoDAO(GenericDAO):
             return []
         finally:
             if cursor: cursor.close()
+            
+            
+# ---------- Filtrar por Placa ----------
+    def listar_por_placa(self, placa: str):
+        """Retorna locações cujo veículo tenha placa que contenha o texto informado (busca parcial)."""
+        if not self.conexao:
+            return []
+        cursor = None
+        try:
+            cursor = self.conexao.cursor()
+            query = """SELECT l.loc_id, v.vei_placa, l.loc_data_inicio, l.loc_data_fim,
+                       l.loc_status, l.loc_valor_total, l.loc_estrategia,
+                       v.vei_tipo, v.vei_categoria, v.vei_taxa_diaria
+                FROM tb_locacoes l
+                INNER JOIN tb_veiculos v ON l.loc_veiculo_id = v.vei_id
+                WHERE v.vei_placa LIKE %s
+                ORDER BY l.loc_id DESC"""
+            cursor.execute(query, (f"%{placa.strip().upper()}%",))
+            return [self._linha_para_locacao(linha) for linha in cursor.fetchall()]
+        except Exception as e:
+            print(f"Erro ao filtrar locações por placa: {e}")
+            return []
+        finally:
+            if cursor: cursor.close()

@@ -30,6 +30,27 @@ class JanelaListagemLocacoes(tk.Toplevel):
         # --- Título ---
         lbl_titulo = tk.Label(self, text="Gerenciamento de Locações (Admin)", font=("Helvetica", 16, "bold"))
         lbl_titulo.pack(pady=10)
+        
+        # --- Frame de Filtro por Placa ---
+        frame_filtro = tk.Frame(self)
+        frame_filtro.pack(fill="x", padx=20, pady=(0, 5))
+
+        tk.Label(frame_filtro, text="Filtrar por Placa:").pack(side="left", padx=(0, 5))
+        self.var_filtro_placa = tk.StringVar()
+        self.var_filtro_placa.trace_add("write", lambda *args: self.filtrar_por_placa())
+        self.entry_filtro_placa = tk.Entry(frame_filtro, width=20, textvariable=self.var_filtro_placa)
+        self.entry_filtro_placa.pack(side="left", padx=(0, 5))
+
+        tk.Button(frame_filtro, text="Filtrar", width=8, command=self.filtrar_por_placa).pack(side="left", padx=2)
+        tk.Button(frame_filtro, text="Limpar", width=8, command=self.limpar_filtro).pack(side="left", padx=2)
+
+        '''
+        Usuário digita "AB" -> Entry atualiza StringVar -> var_filtro_placa = "AB" -> trace_add detecta a escrita
+        -> lambda chama filtrar_por_placa() -> Tabela é atualizada com os resultados
+
+        '''
+        
+        
 
         # --- Frame da Treeview com Scrollbar ---
         frame_tree = tk.Frame(self)
@@ -134,12 +155,18 @@ class JanelaListagemLocacoes(tk.Toplevel):
     # ------------------------------------------------------------------
     # CARREGAR DADOS NA TREEVIEW
     # ------------------------------------------------------------------
-    def carregar_dados(self):
-        """Limpa e recarrega todas as locações do BD na tabela."""
+    def carregar_dados(self, locacoes=None):
+        """Limpa e recarrega locações na tabela.
+        
+        Args:
+            locacoes: lista opcional de objetos Locacao. Se None, busca todas do BD.
+        """
         for row in self.tree.get_children():
             self.tree.delete(row)
 
-        locacoes = self.controller.listar_locacoes()
+        if locacoes is None:
+            locacoes = self.controller.listar_locacoes()
+
         if locacoes is None:
             messagebox.showerror("Erro", "Erro ao carregar locações.", parent=self)
             return
@@ -158,3 +185,21 @@ class JanelaListagemLocacoes(tk.Toplevel):
                 loc.status.capitalize(),
                 valor
             ))
+
+    # ------------------------------------------------------------------
+    # FILTRO POR PLACA
+    # ------------------------------------------------------------------
+    def filtrar_por_placa(self):
+        """Filtra a tabela pelas locações do veículo cuja placa contém o texto digitado."""
+        placa = self.entry_filtro_placa.get().strip()
+        if not placa:
+            # Campo vazio: carrega tudo
+            self.carregar_dados()
+            return
+        locacoes = self.controller.listar_locacoes_por_placa(placa)
+        self.carregar_dados(locacoes)
+
+    def limpar_filtro(self):
+        """Limpa o campo de filtro e restaura a listagem completa."""
+        self.entry_filtro_placa.delete(0, tk.END)
+        self.carregar_dados()
